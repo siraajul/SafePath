@@ -1,0 +1,5 @@
+- SafePath is currently the official Expo SDK 58 starter, not a completed safety application.
+- The app has Home and Explore tabs. There is no login or onboarding flow.
+- Use visible controls to move between tabs and inspect the starter content.
+- Do not infer emergency, location, account, or safety features from the app name.
+- Test only the behaviors described in the pull request. Do not edit code, commit, push, merge, or deploy.
