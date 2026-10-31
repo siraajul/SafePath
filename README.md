@@ -33,7 +33,9 @@ The Expo plugin and remote MCP server are configured in Codex. Run `npm run star
 
 The local `expo-mcp` package uses the patched 0.3.1 release instead of SDK 58's suggested 0.2.x version, which pulls in high-severity dependency advisories. It is excluded from Expo's automatic version alignment so `expo install --fix` preserves that choice.
 
-EAS cloud workflows are not linked or activated yet. They require an EAS project, a connected GitHub repository, CI agent credentials, and Expo Simulators preview access. Session credentials and generated agent evidence are excluded from version control.
+QA runs in GitHub Actions without an AI API key or Expo cloud credentials: lint, TypeScript, helper tests, web export, and desktop/mobile browser smoke tests. Run `npx playwright install chromium` once, then `npm run qa`. See [QA setup](docs/qa.md).
+
+The optional agentic workflows and issue-label trigger are archived outside their active workflow directories. Their [activation guide](docs/agentic-ci.md) is retained for later use. The existing EAS project link and local MCP tooling are still available.
 
 You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 

@@ -8,9 +8,11 @@
     "scheme": "safepath",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.siraajul.safepath",
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.siraajul.safepath",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -37,6 +39,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "16a57610-19a0-42b6-aeb6-0d0d6f34b3ab"
+      }
+    },
+    "owner": "siraajul"
   }
 }

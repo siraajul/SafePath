@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { ObserveInteractiveMarker } from 'expo-observe';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
@@ -12,7 +13,7 @@ export function AnimatedSplashOverlay() {
   const [animate, setAnimate] = useState(false);
   const [visible, setVisible] = useState(true);
 
-  if (!visible) return null;
+  if (!visible) return <ObserveInteractiveMarker />;
 
   const splashKeyframe = new Keyframe({
     0: {
