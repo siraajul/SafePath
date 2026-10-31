@@ -43,6 +43,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
+    "test:workflows": "node --test scripts/agentic-workflows.test.mjs",
     "export:web": "expo export --platform web"
   },
   "private": true,
