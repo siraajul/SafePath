@@ -3,6 +3,7 @@ import { getLocales } from 'expo-localization';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import i18n, { type Language, resolveLanguage } from '@/i18n';
+import { hydrateStores } from '@/stores';
 
 const LANGUAGE_KEY = 'preferences.language';
 const ONBOARDED_KEY = 'preferences.onboarded';
@@ -33,6 +34,7 @@ export function PreferencesProvider({ children }: PropsWithChildren) {
         // Unreadable storage behaves like a first launch.
       }
       const resolved = resolveLanguage(saved[0], getLocales()[0]?.languageCode ?? null);
+      await hydrateStores();
       await i18n.changeLanguage(resolved);
       setLanguageState(resolved);
       setOnboarded(saved[1] === '1');

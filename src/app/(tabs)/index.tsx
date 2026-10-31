@@ -1,98 +1,109 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { RowButton } from '@/components/ui/row-button';
+import { Screen } from '@/components/ui/screen';
+import { Spacing } from '@/constants/theme';
+import { usePreferences } from '@/hooks/use-preferences';
+import { requestPosition } from '@/hooks/use-location';
+import { placeLabel } from '@/lib/place';
+import { planStore } from '@/stores';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+type LocationNote = 'locationOff' | 'locationBlocked' | 'locationFailed' | null;
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
+  const { language } = usePreferences();
+  const plan = planStore.useValue();
+  const [locating, setLocating] = useState(false);
+  const [note, setNote] = useState<LocationNote>(null);
+
+  const originText =
+    plan.origin?.kind === 'device'
+      ? t('home.myLocation')
+      : plan.origin?.place
+        ? placeLabel(plan.origin.place, language)
+        : t('home.chooseStart');
+  const destinationText = plan.destination ? placeLabel(plan.destination, language) : t('home.chooseDestination');
+
+  const sameSpot = !!plan.destination && plan.origin?.kind === 'place' && plan.origin.place?.id === plan.destination.id;
+  const ready = !!plan.origin && !!plan.destination && !sameSpot && (plan.origin.kind === 'place' || !!plan.device);
+  const problem = !plan.origin || !plan.destination ? 'pickBoth' : sameSpot ? 'sameSpot' : null;
+
+  async function useMyLocation() {
+    setLocating(true);
+    setNote(null);
+    const { state, position } = await requestPosition();
+    setLocating(false);
+    if (position) {
+      planStore.set((p) => ({ ...p, origin: { kind: 'device' }, device: position }));
+    } else {
+      setNote(state === 'blocked' ? 'locationBlocked' : state === 'denied' ? 'locationOff' : 'locationFailed');
+    }
+  }
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <Screen tab>
+      <ThemedText type="subtitle" accessibilityRole="header" style={styles.title}>
+        {t('home.title')}
+      </ThemedText>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
+      <View style={styles.group}>
+        <ThemedText type="smallBold" themeColor="textSecondary">
+          {t('home.from')}
         </ThemedText>
+        <RowButton
+          icon={{ ios: 'circle', android: 'radio_button_unchecked', web: 'radio_button_unchecked' }}
+          title={originText}
+          onPress={() => router.push({ pathname: '/search', params: { field: 'origin' } })}
+        />
+        <Button
+          variant="secondary"
+          icon={{ ios: 'location', android: 'my_location', web: 'my_location' }}
+          label={locating ? t('home.locating') : t('home.useMyLocation')}
+          loading={locating}
+          onPress={useMyLocation}
+        />
+        {note && (
+          <Card>
+            <ThemedText type="small">{t(`home.${note}`)}</ThemedText>
+          </Card>
+        )}
+      </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      <View style={styles.group}>
+        <ThemedText type="smallBold" themeColor="textSecondary">
+          {t('home.to')}
+        </ThemedText>
+        <RowButton
+          icon={{ ios: 'mappin.circle.fill', android: 'location_on', web: 'location_on' }}
+          title={destinationText}
+          onPress={() => router.push({ pathname: '/search', params: { field: 'destination' } })}
+        />
+      </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <Button label={t('home.findRoute')} disabled={!ready} onPress={() => router.push('/routes')} />
+      {problem && !ready && (
+        <ThemedText type="small" themeColor="textSecondary">
+          {t(`home.${problem}`)}
+        </ThemedText>
+      )}
+
+      <RowButton
+        icon={{ ios: 'phone.fill', android: 'call', web: 'call' }}
+        title={t('home.helpCard')}
+        onPress={() => router.navigate('/help')}
+      />
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  title: { fontSize: 30, lineHeight: 44, marginTop: Spacing.two },
+  group: { gap: Spacing.two },
 });
