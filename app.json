@@ -34,7 +34,26 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      "@maplibre/maplibre-react-native",
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": [
+              "bn",
+              "en"
+            ],
+            "android": [
+              "bn",
+              "en"
+            ]
+          }
+        }
+      ],
+      "expo-secure-store",
+      "expo-location",
+      "expo-image-picker"
     ],
     "experiments": {
       "typedRoutes": true,
