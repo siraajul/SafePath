@@ -14,6 +14,7 @@ export const en = {
     loading: 'Loading…',
     disclaimer: 'These observations do not guarantee safety.',
     synthetic: 'Sample data for design preview. These are not real route observations.',
+    osmDev: 'Development preview. Streets and routes come from OpenStreetMap through public servers, and the places you choose are sent to them. No conditions information exists yet.',
     preview: 'Preview only. The service is not connected yet, so nothing is sent from this device.',
     openSettings: 'Open settings',
     minutes: '{{n}} min',
@@ -64,6 +65,10 @@ export const en = {
     noResults: 'No places found',
     noResultsHint: 'Try a different spelling, in Bangla or English.',
     note: 'Search uses a short list of sample places for now.',
+    noteOsm: 'Type a place and press search. Results come from OpenStreetMap.',
+    popular: 'Popular places in Dhaka',
+    button: 'Search',
+    failed: 'Search is unavailable right now. Please try again in a moment.',
   },
   routes: {
     title: 'Route options',
@@ -73,6 +78,7 @@ export const en = {
     from: 'From',
     to: 'To',
     errors: {
+      OUTSIDE_SERVICE_AREA: 'This trip is outside Dhaka. Choose places inside the Dhaka area.',
       INVALID_COORDINATE: 'Those places could not be used. Please choose them again.',
       NO_WALKING_ROUTE: 'No walking route was found between these places.',
       ROUTING_UNAVAILABLE: 'Routing is unavailable right now. Please try again later.',
@@ -320,6 +326,7 @@ export const bn: typeof en = {
     loading: 'লোড হচ্ছে…',
     disclaimer: 'এই তথ্য নিরাপত্তার নিশ্চয়তা নয়।',
     synthetic: 'এগুলো ডিজাইন প্রিভিউয়ের নমুনা তথ্য। এগুলো আসল রুটের পর্যবেক্ষণ নয়।',
+    osmDev: 'ডেভেলপমেন্ট প্রিভিউ। রাস্তা ও রুট ওপেনস্ট্রিটম্যাপ থেকে পাবলিক সার্ভারের মাধ্যমে আসছে, এবং আপনার বেছে নেওয়া জায়গা সেগুলোতে পাঠানো হচ্ছে। রুটের অবস্থার কোনো তথ্য এখনো নেই।',
     preview: 'শুধু প্রিভিউ। সেবা এখনো যুক্ত হয়নি, তাই এই ডিভাইস থেকে কিছু পাঠানো হচ্ছে না।',
     openSettings: 'সেটিংস খুলুন',
     minutes: '{{n}} মিনিট',
@@ -370,6 +377,10 @@ export const bn: typeof en = {
     noResults: 'কোনো জায়গা পাওয়া যায়নি',
     noResultsHint: 'বাংলা বা ইংরেজিতে অন্যভাবে বানান করে দেখুন।',
     note: 'আপাতত খোঁজার জন্য কয়েকটি নমুনা জায়গা ব্যবহার করা হচ্ছে।',
+    noteOsm: 'জায়গার নাম লিখে খুঁজুন চাপুন। ফলাফল ওপেনস্ট্রিটম্যাপ থেকে আসে।',
+    popular: 'ঢাকার জনপ্রিয় জায়গা',
+    button: 'খুঁজুন',
+    failed: 'এখন খোঁজার সেবা পাওয়া যাচ্ছে না। একটু পরে আবার চেষ্টা করুন।',
   },
   routes: {
     title: 'রুটের বিকল্প',
@@ -379,6 +390,7 @@ export const bn: typeof en = {
     from: 'শুরু',
     to: 'গন্তব্য',
     errors: {
+      OUTSIDE_SERVICE_AREA: 'এই যাত্রা ঢাকার বাইরে। ঢাকা এলাকার ভেতরের জায়গা বেছে নিন।',
       INVALID_COORDINATE: 'এই জায়গাগুলো ব্যবহার করা যায়নি। আবার বেছে নিন।',
       NO_WALKING_ROUTE: 'এই দুই জায়গার মধ্যে হাঁটার রুট পাওয়া যায়নি।',
       ROUTING_UNAVAILABLE: 'এখন রুট খোঁজার সেবা পাওয়া যাচ্ছে না। পরে আবার চেষ্টা করুন।',

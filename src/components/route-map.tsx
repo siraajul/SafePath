@@ -1,14 +1,17 @@
-import { Camera, GeoJSONSource, Layer, Map } from '@maplibre/maplibre-react-native';
+import { Camera, GeoJSONSource, Layer, Map, TransformRequestManager } from '@maplibre/maplibre-react-native';
 import type { FilterSpecification } from '@maplibre/maplibre-react-native';
 import { StyleSheet, useColorScheme, View } from 'react-native';
 
 import { Spacing } from '@/constants/theme';
-import { mapStyleFor } from '@/constants/map';
+import { mapStyleFor, TILE_USER_AGENT } from '@/constants/map';
 import { useTheme } from '@/hooks/use-theme';
 import { PILOT_POLYGON } from '@/domain/synthetic';
 import type { EvidenceState } from '@/domain/types';
 
 import type { RouteMapProps } from './route-map.types';
+
+// OSM's tile servers block generic client names, so identify the app.
+TransformRequestManager.addHeader({ id: 'osm-user-agent', name: 'User-Agent', value: TILE_USER_AGENT, match: /tile\.openstreetmap\.org/ });
 
 const eq = (key: string, value: string) => ['==', ['get', key], value] as unknown as FilterSpecification;
 

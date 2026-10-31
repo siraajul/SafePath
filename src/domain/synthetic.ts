@@ -222,6 +222,7 @@ export function buildComparison(request: CompareRequest): CompareResponse {
     safetyGuarantee: false,
     recommendationStatus: status,
     routes,
+    source: 'SYNTHETIC',
     synthetic: true,
   };
 }

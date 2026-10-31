@@ -1,13 +1,44 @@
 import type { StyleSpecification } from '@maplibre/maplibre-react-native';
 
+import { DATA_SOURCE, USER_AGENT } from '@/api/config';
+
+export const OSM_ATTRIBUTION = '© OpenStreetMap contributors';
+
 /**
- * Basemap style. No tile provider is licensed yet (spec section 8.1: the public OSM tiles are not
- * for production), so by default the map is a plain background with the routes drawn on top.
- * Set EXPO_PUBLIC_MAP_STYLE_URL to a licensed style URL to add streets without changing code.
+ * Basemap style.
+ * - EXPO_PUBLIC_MAP_STYLE_URL wins when set (use this for a licensed or self-hosted style).
+ * - In the development data source, OpenStreetMap's public tiles are used. Their policy allows
+ *   light use with attribution and a distinct User-Agent, and forbids production, bulk or offline
+ *   use, so this must be replaced before any real pilot.
+ * - Otherwise the map is a plain background with the routes drawn on top.
  */
 export function mapStyleFor(scheme: 'light' | 'dark'): string | StyleSpecification {
   const url = process.env.EXPO_PUBLIC_MAP_STYLE_URL;
   if (url) return url;
+
+  if (DATA_SOURCE === 'osm-dev') {
+    return {
+      version: 8,
+      sources: {
+        osm: {
+          type: 'raster',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          maxzoom: 19,
+          attribution: OSM_ATTRIBUTION,
+        },
+      },
+      layers: [
+        {
+          id: 'osm',
+          type: 'raster',
+          source: 'osm',
+          paint: scheme === 'dark' ? { 'raster-brightness-max': 0.55, 'raster-saturation': -0.5 } : {},
+        },
+      ],
+    };
+  }
+
   return {
     version: 8,
     sources: {},
@@ -20,3 +51,6 @@ export function mapStyleFor(scheme: 'light' | 'dark'): string | StyleSpecificati
     ],
   };
 }
+
+/** Identifies the app to the OSM tile servers, as their usage policy requires. */
+export const TILE_USER_AGENT = USER_AGENT;

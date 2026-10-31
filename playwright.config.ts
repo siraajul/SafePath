@@ -23,6 +23,6 @@ export default defineConfig({
     url: 'http://127.0.0.1:8090',
     timeout: 120_000,
     reuseExistingServer: !process.env.CI,
-    env: { CI: '1', EXPO_OFFLINE: '1', EXPO_UNSTABLE_MCP_SERVER: '' },
+    env: { CI: '1', EXPO_OFFLINE: '1', EXPO_UNSTABLE_MCP_SERVER: '', EXPO_PUBLIC_DATA_SOURCE: 'synthetic' },
   },
 });

@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { searchPlaces } from '@/api';
+import { popularPlaces, searchesAsYouType, searchPlaces } from '@/api';
 import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { Notice } from '@/components/ui/notice';
 import { RowButton } from '@/components/ui/row-button';
@@ -20,8 +21,21 @@ export default function SearchScreen() {
   const { t } = useTranslation();
   const { language } = usePreferences();
   const { field } = useLocalSearchParams<{ field?: 'origin' | 'destination' }>();
-  const [q, setQ] = useState('');
-  const { data, isFetching } = useQuery({ queryKey: ['places', q], queryFn: () => searchPlaces(q) });
+  const [typed, setTyped] = useState('');
+  const [submitted, setSubmitted] = useState('');
+
+  // The public geocoder forbids search-as-you-type, so real search runs only on submit.
+  const query = searchesAsYouType ? typed : submitted;
+  const searching = query.trim().length >= 2 || (searchesAsYouType && query.trim().length > 0);
+  const { data, isFetching, isError, refetch } = useQuery({
+    queryKey: ['places', query.trim().toLowerCase()],
+    queryFn: () => searchPlaces(query),
+    enabled: searching,
+    retry: false,
+    staleTime: 10 * 60_000,
+  });
+
+  const results = searching ? data : popularPlaces();
 
   function choose(place: Place) {
     planStore.set((p) =>
@@ -33,29 +47,47 @@ export default function SearchScreen() {
   return (
     <Screen>
       <Stack.Screen options={{ title: field === 'origin' ? t('search.startTitle') : t('search.title') }} />
-      <Field label={t('search.placeholder')} value={q} onChangeText={setQ} autoFocus returnKeyType="search" autoCorrect={false} />
-      <Notice kind="synthetic" text={t('search.note')} />
+      <Field
+        label={t('search.placeholder')}
+        value={typed}
+        onChangeText={setTyped}
+        onSubmitEditing={() => setSubmitted(typed)}
+        autoFocus
+        returnKeyType="search"
+        autoCorrect={false}
+      />
+      {!searchesAsYouType && (
+        <Button variant="secondary" label={t('search.button')} disabled={typed.trim().length < 2} onPress={() => setSubmitted(typed)} />
+      )}
+      <Notice kind={searchesAsYouType ? 'synthetic' : 'info'} text={searchesAsYouType ? t('search.note') : t('search.noteOsm')} />
 
-      {!q.trim() && (
+      {!searching && (
         <ThemedText type="smallBold" themeColor="textSecondary">
-          {t('search.samples')}
+          {searchesAsYouType ? t('search.samples') : t('search.popular')}
         </ThemedText>
       )}
-      {isFetching && !data ? <ActivityIndicator /> : null}
+      {isFetching ? <ActivityIndicator /> : null}
 
-      <View style={styles.list}>
-        {data?.map((place) => (
-          <RowButton
-            key={place.id}
-            icon={{ ios: 'mappin', android: 'location_on', web: 'location_on' }}
-            title={placeLabel(place, language)}
-            onPress={() => choose(place)}
-            chevron={false}
-          />
-        ))}
-      </View>
+      {isError ? (
+        <View style={styles.empty}>
+          <ThemedText type="default">{t('search.failed')}</ThemedText>
+          <Button variant="secondary" label={t('common.retry')} onPress={() => refetch()} />
+        </View>
+      ) : (
+        <View style={styles.list}>
+          {results?.map((place) => (
+            <RowButton
+              key={place.id}
+              icon={{ ios: 'mappin', android: 'location_on', web: 'location_on' }}
+              title={placeLabel(place, language)}
+              onPress={() => choose(place)}
+              chevron={false}
+            />
+          ))}
+        </View>
+      )}
 
-      {data && data.length === 0 && (
+      {searching && !isFetching && !isError && data && data.length === 0 && (
         <View style={styles.empty}>
           <ThemedText type="default" accessibilityRole="header">
             {t('search.noResults')}

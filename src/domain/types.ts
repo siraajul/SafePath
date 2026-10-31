@@ -13,7 +13,8 @@ export type Place = {
   id: string;
   name: { bn: string; en: string };
   coordinate: LngLat;
-  scenario: Scenario;
+  /** Only synthetic places carry a scenario; real places are never given invented data. */
+  scenario?: Scenario;
 };
 
 /** Legend classes from the spec: verified, reported/unverified, old, unknown. */
@@ -82,8 +83,9 @@ export type CompareResponse = {
   safetyGuarantee: false;
   recommendationStatus: RecommendationStatus;
   routes: RouteOption[];
-  /** True for every response until a real backend replaces the synthetic one. */
-  synthetic: true;
+  source: 'SYNTHETIC' | 'OSM_DEV';
+  /** True when routes and observations are invented sample data. */
+  synthetic: boolean;
 };
 
 export type ContactState = 'INVITED' | 'ACCEPTED' | 'REVOKED' | 'EXPIRED';

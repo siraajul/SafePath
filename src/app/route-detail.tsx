@@ -37,7 +37,7 @@ export default function RouteDetailScreen() {
 
   return (
     <Screen>
-      <Notice kind="synthetic" />
+      <Notice kind={data.synthetic ? 'synthetic' : 'dev'} />
 
       <Card>
         <ThemedText type="smallBold" themeColor="textSecondary">

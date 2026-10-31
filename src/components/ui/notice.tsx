@@ -6,13 +6,15 @@ import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-type Props = { kind: 'synthetic' | 'preview' | 'info' | 'warning'; text?: string };
+type Props = { kind: 'synthetic' | 'preview' | 'dev' | 'info' | 'warning'; text?: string };
 
 /** A bordered note with an icon, so the meaning never relies on colour alone. */
 export function Notice({ kind, text }: Props) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const message = text ?? (kind === 'synthetic' ? t('common.synthetic') : kind === 'preview' ? t('common.preview') : '');
+  const message =
+    text ??
+    (kind === 'synthetic' ? t('common.synthetic') : kind === 'preview' ? t('common.preview') : kind === 'dev' ? t('common.osmDev') : '');
   const tint = kind === 'warning' ? theme.caution : theme.textSecondary;
 
   return (

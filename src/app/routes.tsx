@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { ApiError } from '@/api';
+import { ApiError, DATA_SOURCE } from '@/api';
 import { RouteCard } from '@/components/route-card';
 import RouteMap from '@/components/route-map';
 import { ThemedText } from '@/components/themed-text';
@@ -36,7 +36,7 @@ export default function RoutesScreen() {
 
   return (
     <Screen>
-      <Notice kind="synthetic" />
+      <Notice kind={DATA_SOURCE === 'synthetic' ? 'synthetic' : 'dev'} />
       <View style={styles.trip}>
         <ThemedText type="small" themeColor="textSecondary">
           {t('routes.from')}: {originText}
