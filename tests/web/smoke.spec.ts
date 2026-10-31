@@ -22,8 +22,11 @@ test('Explore expands its routing content and returns Home', async ({ page }, te
   await expect(page).toHaveURL(/\/explore$/);
   const section = page.getByText('File-based routing', { exact: true });
   const details = page.getByText('src/app/explore.tsx', { exact: true });
-  await section.click();
-  await expect(details).toBeVisible();
+  // The first click can land before the web build hydrates, so retry until it takes effect.
+  await expect(async () => {
+    if (!(await details.isVisible())) await section.click();
+    await expect(details).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10_000 });
   await testInfo.attach('explore-expanded', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
   await section.click();
   await expect(details).toBeHidden();
