@@ -1,5 +1,7 @@
 # SafePath agentic workflows
 
+> **Disabled optional configuration.** The active pipeline is [standard QA without an AI API key](qa.md). EAS YAML files are archived in `.eas/disabled-workflows/`; the issue-label bridge is in `.github/disabled-workflows/`. Restore them to their original workflow directories only if you later provision the credentials and choose to enable AI automation. The instructions below describe that optional setup.
+
 All four Expo workflow types are configured using Codex and agent-device. This is configuration and local validation; no live cloud build, simulator session, agent run, issue comment, or generated PR has been run as part of setup.
 
 | Workflow | Files | Trigger and result |
