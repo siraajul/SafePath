@@ -33,7 +33,7 @@ The Expo plugin and remote MCP server are configured in Codex. Run `npm run star
 
 The local `expo-mcp` package uses the patched 0.3.1 release instead of SDK 58's suggested 0.2.x version, which pulls in high-severity dependency advisories. It is excluded from Expo's automatic version alignment so `expo install --fix` preserves that choice.
 
-SafePath is linked to [its EAS project](https://expo.dev/accounts/siraajul/projects/SafePath). The iOS Agentic CI workflow and Codex/device-controller scripts are configured locally. Cloud runs still require GitHub integration, CI secrets, and Expo Simulators access. See [Agentic CI setup](docs/agentic-ci.md) for activation steps and the verified status. Session credentials and generated agent evidence are excluded from version control.
+SafePath is linked to [its EAS project](https://expo.dev/accounts/siraajul/projects/SafePath). Agentic CI, QA Swarm, Issue to PR, and Bug Triage are configured locally, with Android/iOS device workflows and TestFlight intake. Cloud activation still requires GitHub integration, CI secrets, simulator access, and platform credentials. See [Agentic workflow setup](docs/agentic-ci.md) for activation steps and run commands. Session credentials and generated agent evidence are excluded from version control.
 
 You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
