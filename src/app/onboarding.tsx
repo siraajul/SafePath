@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandMark } from '@/components/brand-mark';
 import { ThemedText } from '@/components/themed-text';
+import { Segmented } from '@/components/ui/segmented';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { usePreferences } from '@/hooks/use-preferences';
@@ -39,30 +40,11 @@ export default function OnboardingScreen() {
             <ThemedText type="smallBold" themeColor="textSecondary">
               Language / ভাষা
             </ThemedText>
-            <View accessibilityRole="radiogroup" style={styles.segmented}>
-              {LANGUAGES.map((code) => {
-                const selected = code === language;
-                return (
-                  <Pressable
-                    key={code}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected, checked: selected }}
-                    onPress={() => setLanguage(code)}
-                    style={[
-                      styles.segment,
-                      { backgroundColor: selected ? theme.brand : theme.backgroundElement },
-                      { borderColor: selected ? theme.brand : theme.backgroundSelected },
-                    ]}>
-                    <ThemedText
-                      type="default"
-                      style={styles.segmentText}
-                      themeColor={selected ? 'onBrand' : 'text'}>
-                      {t(`language.${code}`)}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
-            </View>
+            <Segmented
+              value={language}
+              onChange={setLanguage}
+              options={LANGUAGES.map((code) => ({ value: code, label: t(`language.${code}`) }))}
+            />
           </View>
 
           <ThemedText type="subtitle" style={styles.title} accessibilityRole="header">
@@ -123,18 +105,6 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   appName: { fontSize: 24, lineHeight: 36 },
   section: { gap: Spacing.two },
-  segmented: { flexDirection: 'row', gap: Spacing.two },
-  segment: {
-    flex: 1,
-    minHeight: 48,
-    borderRadius: Spacing.three,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-  },
-  segmentText: { fontSize: 17, lineHeight: 28 },
   // Bangla needs generous line height so conjuncts are not clipped.
   title: { fontSize: 28, lineHeight: 42 },
   points: { gap: Spacing.three },

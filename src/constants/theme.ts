@@ -16,6 +16,11 @@ export const Colors = {
     textSecondary: '#536576',
     brand: '#215BC7',
     onBrand: '#FFFFFF',
+    verified: '#27866E',
+    caution: '#B47816',
+    unknown: '#8A929C',
+    emergency: '#C93C45',
+    onEmergency: '#FFFFFF',
   },
   dark: {
     text: '#F5F7FA',
@@ -25,6 +30,11 @@ export const Colors = {
     textSecondary: '#AAB8C7',
     brand: '#71A7FF',
     onBrand: '#0D1722',
+    verified: '#6AC4A5',
+    caution: '#E3AD55',
+    unknown: '#AAB2BC',
+    emergency: '#FF7C82',
+    onEmergency: '#0D1722',
   },
 } as const;
 
